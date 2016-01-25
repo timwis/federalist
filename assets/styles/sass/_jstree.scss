@@ -1,0 +1,106 @@
+.pages input[type="checkbox"] {
+  display: inline-block;
+  left: 0;
+  position: relative;
+  width: auto;
+}
+
+.pages-listing-controls {
+  display: flex;
+}
+
+.pages-listing-controls ul {
+  display: inline-block;
+}
+
+.pages-listing-controls li {
+  display: inline;
+  margin-left: 1.4em;
+}
+
+.jstree-container-ul {
+  width: 100%;
+}
+
+.jstree-container-ul li.jstree-node {
+  border-bottom: 0;
+  min-height: 3em;
+}
+
+.jstree-container-ul li.jstree-node.expanded {
+  min-height: 4em;
+}
+
+.jstree-default .jstree-wholerow {
+  min-height: 3em;
+  z-index: -1;
+}
+
+.jstree-node.expanded .jstree-wholerow {
+  min-height: 4em;
+}
+
+.jstree-node.expanded .jstree-node-federalist-controls {
+  min-height: 4em;
+}
+
+.jstree-default .jstree-anchor {
+  min-height: 2.2em;
+}
+
+.jstree-icon.jstree-themeicon {
+  display: none;
+}
+
+.jstree-default .jstree-wholerow-clicked {
+  background: white;
+  border: 2px solid $header-bg-color;
+}
+
+.jstree-default .jstree-wholerow-clicked ~ a {
+  // color: $header-text-color;
+}
+
+.jstree-hovered .jstree-checkbox {
+
+}
+
+.jstree-node-federalist-controls {
+  display: inline-block;
+  width: 75%;
+}
+
+.jstree-node-federalist-controls-navigation {
+  display: inline-block;
+  position: absolute;
+  right: .7em;
+  text-align: right;
+  width: 50%;
+}
+
+.jstree-node-federalist-controls-navigation::after {
+  clear: both;
+  content: '';
+  display: table-cell;
+}
+
+.jstree-node-federalist-controls-navigation form.hidden {
+  display: none;
+}
+
+.jstree-node-federalist-controls-navigation form {
+  display: block;
+
+  [type=checkbox] {
+    display: inline;
+    left: 0;
+    position: relative;
+    width: auto;
+  }
+}
+
+.jstree-node-federalist-controls .usa-button {
+  font-size: .8em;
+  margin: 0;
+  padding: .5em 1em;
+}

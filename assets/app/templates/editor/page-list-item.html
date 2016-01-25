@@ -1,10 +1,13 @@
-<li class="list-group-item">
-  <div class="usa-grid">
-    <div class="usa-width-two-thirds">
-      <%- text %>
-    </div>
-    <div class="usa-width-one-third">
-      <a class="usa-button usa-button-outline file-list-item-button" href="<%- href %>">Edit</a>
-    </div>
+<span>
+  <% if (draft) { %><span class="usa-label"><%- draft %></span><% } %>
+
+  <a class="usa-button usa-button-outline" href="<%- href %>">Edit</a>
+  <div class="jstree-node-federalist-controls-navigation">
+    <a data-action="reveal-navigation-options">Navigation options</a>
+    <a data-action="hide-navigation-options" style="display: none;">Close</a>
+    <form class="hidden">
+      <input type="checkbox" name="menu" <% if (menu) { %> checked <% } %> >Show in menu</input>
+      <input type="checkbox" name="footer" <% if (footer) { %> checked <% } %> >Show in footer</input>
+    </form>
   </div>
-</li>
+</span>

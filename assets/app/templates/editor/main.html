@@ -1,6 +1,7 @@
 <div class="usa-grid">
   <div class="usa-width-two-thirds">
-    <h1>Edit content of <%- owner %> / <%- repo %></h1>
+    <% var r = repo.replace(new RegExp('-', 'g'), ' '); %>
+    <h1><%- r[0].toUpperCase() + r.slice(1) %></h1>
   </div>
   <div class="usa-width-one-third">
     <a class="usa-button usa-button-big pull-right" id="add-page" alt="Add a new page" href="#" role="button">Add a new page</a>
