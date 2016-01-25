@@ -1,12 +1,21 @@
 @import "sass/_variables";
-@import "sass/_text";
+
+@import "sass/_animations";
+@import "sass/_breadcrumb";
 @import "sass/_buttons";
+@import "sass/_editors";
+@import "sass/_forms";
 @import "sass/_header";
 @import "sass/_home";
-@import "sass/_breadcrumb";
-@import "sass/_forms";
-@import "sass/_editors";
-@import "sass/_animations";
+@import "sass/_jstree";
+@import "sass/_labels";
+@import "sass/_text";
+
+
+[draggable],
+[draggable=true] {
+  cursor: move;
+}
 
 footer {
   margin-top: 5em;
@@ -50,22 +59,6 @@ footer {
   }
 }
 
-.usa-label {
-  text-transform: capitalize;
-}
-
-.label-success {
-  background-color: $label-success-bg-color;
-}
-
-.label-danger {
-  background-color: $label-danger-bg-color;
-}
-
-.label-warning {
-  background-color: $label-warning-bg-color;
-}
-
 .list-group {
   width: 100%;
 }
@@ -92,8 +85,8 @@ footer {
 
 .list-group ul {
   margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 2em;
+  margin-top: 1.3em;
+  padding-left: 1em;
 }
 
 .upload-alert {
