@@ -81,6 +81,8 @@ var PagesView = Backbone.View.extend({
     })(jQuery);
   },
   preparePageData: function (pages) {
+    var github = this.model;
+
     return replaceDataLabels(pages, 'title', 'text')
       .assigned.map(function(d) {
         return processNode(d);
@@ -110,7 +112,7 @@ var PagesView = Backbone.View.extend({
     function insertAttrs (i) {
       i.li_attr = {
         'data-edit-href': i.href,
-        'data-draft-state': false,
+        'data-draft-state': _.contains(github.get('drafts'), i.href),
         'data-show-in-menu': i.show_in_menu || false,
         'data-show-in-footer': i.show_in_footer || false
       };
@@ -182,12 +184,14 @@ var PagesView = Backbone.View.extend({
     return this;
   },
   revealNavigationOptions: function (e) {
+    e.stopPropagation();
     $(e.target).hide();
     $(e.target).parents('.jstree-node').first().addClass('expanded');
     $(e.target).siblings('[data-action=hide-navigation-options]').show();
     $(e.target).siblings('form').removeClass('hidden');
   },
   hideNavigationOptions: function (e) {
+    e.stopPropagation();
     $(e.target).hide();
     $(e.target).parents('.jstree-node').first().removeClass('expanded');
     $(e.target).siblings('[data-action=reveal-navigation-options]').show();
@@ -195,18 +199,19 @@ var PagesView = Backbone.View.extend({
   },
   onSelectAll: function (e) {
     var checked = e.target.checked;
+    e.stopPropagation();
 
     if (checked) this.$tree.jstree(true).check_all();
     else this.$tree.jstree(true).uncheck_all();
   },
   onDeleteDraft: function (e) {
-
+    e.stopPropagation();
   },
   onDeletePage: function (e) {
-
+    e.stopPropagation();
   },
   onPublish: function (e) {
-
+    e.stopPropagation();
   },
   onNavigationChange: function (e) {
     e.stopPropagation();
@@ -218,11 +223,13 @@ var PagesView = Backbone.View.extend({
     data[field] = e.target.checked;
   },
   onSaveNavigation: function (e) {
-    window.federalist.github.once('github:commit:success', function (e) {
+    e.stopPropagation();
+
+    this.model.once('github:commit:success', function (e) {
       alert('Navigation successfully saved');
     });
 
-    window.federalist.github.commit({
+    this.model.commit({
       content: this.generateYmlFromTree(this.$tree),
       message: 'Update site navigation',
       path: '_data/navbar.yml',
