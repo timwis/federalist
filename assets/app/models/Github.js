@@ -4,6 +4,7 @@ var async = require('async');
 var Backbone = require('backbone');
 var yaml = require('yamljs');
 
+var decodeB64 = require('../helpers/encoding').decodeB64;
 var encodeB64 = require('../helpers/encoding').encodeB64;
 
 var GithubModel = Backbone.Model.extend({
@@ -70,6 +71,9 @@ var GithubModel = Backbone.Model.extend({
 
     if (this.attributes.json && this.attributes.json.sha) {
       data.sha = this.attributes.json.sha;
+    }
+    else if (opts.sha) {
+      data.sha = opts.sha;
     }
 
     $.ajax(this.url({ path: data.path }), {
@@ -181,45 +185,27 @@ var GithubModel = Backbone.Model.extend({
 
     return this;
   },
-  s3ConfigUrl: function (file) {
-    var bucketPath = /^http\:\/\/(.*)\.s3\-website\-(.*)\.amazonaws\.com/,
-        siteRoot = (this.site) ? this.site.get('siteRoot') : '',
-        match = siteRoot.match(bucketPath),
-        bucket = match && match[1],
-        root = bucket ? 'https://s3.amazonaws.com/' + bucket :
-               siteRoot ? siteRoot : '';
-
-    return [root, 'site', this.owner, this.name, file].join('/');
-  },
-  githubConfigUrl: function (file) {
-    var ghBase = 'https://raw.githubusercontent.com';
-    return [ghBase, this.owner, this.name, this.branch, file].join('/');
-  },
-  configUrl: function (opts) {
-    var file = opts.name,
-        source = opts.source || 's3',
-        url = (source === 's3') ? this.s3ConfigUrl(file) : this.githubConfigUrl(file);
-
-    return url;
-  },
   fetchConfig: function () {
     var self  = this,
         files = [{ name: '_config.yml', source: 'github' },
-                { name: '_navigation.json', source: 's3' }];
+                // { name: '_navigation.json', source: 's3' },
+                { name: '_data/navbar.yml', source: 'github' }];
 
     var getFiles = files.map(function(file) {
       return function(callback) {
-        var url = self.configUrl(file);
+        var url = self.url({ path: file.name});
         $.ajax({
           url: url,
           complete: function(res) {
             var r = {
               file: file.name,
               present: (res.status === 200) ? true : false
-              //json: res.responseJSON || yaml.parse(res.responseText)
             };
+            console.log('r', r);
             try {
               r.json = res.responseJSON || yaml.parse(res.responseText);
+              r.json.decodedContent = decodeB64(r.json.content);
+              r.json.yaml = yaml.parse(decodeB64(r.json.content));
             } catch (e) {
               r.json = [];
             }
@@ -278,8 +264,8 @@ var GithubModel = Backbone.Model.extend({
   },
   getDefaults: function () {
     var config = this.configFiles['_config.yml'],
-        hasDefaults = config.present && config.json && config.json.defaults,
-        defaultConfigs = (hasDefaults) ? config.json.defaults : [],
+        hasDefaults = config.present && config.json && config.json.yml && config.json.yml.defaults,
+        defaultConfigs = (hasDefaults) ? config.json.yml.defaults : [],
         defaults = defaultConfigs.filter(function (c) {
           return c.scope.path === "";
         }),

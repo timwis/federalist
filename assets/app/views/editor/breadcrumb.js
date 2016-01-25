@@ -25,10 +25,8 @@ var BreadcrumbView = Backbone.View.extend({
         repo    = this.model.get('repoName'),
         branch  = this.model.get('branch'),
         file    = this.model.get('file'),
-        type    = (this.model.configFiles['_navigation.json'].present) ? 'pages' : 'files',
+        type    = (this.model.configFiles['_data/navbar.yml'].present) ? 'pages' : 'files',
         filePath;
-
-    console.log('type', type);
 
     this.$el.empty();
 

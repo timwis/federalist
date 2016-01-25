@@ -63,8 +63,8 @@ var EditView = Backbone.View.extend({
     else {
       var editButton = $('<a class="btn btn-primary pull-right" id="add-page" href="#" role="button">Add a new page</a>');
       this.$('#edit-button').append(editButton);
-      if (config['_navigation.json'] && config['_navigation.json'].present) {
-        pages = config['_navigation.json'].json;
+      if (config['_data/navbar.yml'] && config['_data/navbar.yml'].present) {
+        pages = config['_data/navbar.yml'].json;
         childView = new PagesView({ model: model, pages: pages });
       }
       else {
