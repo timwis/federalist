@@ -103,8 +103,8 @@ var PagesView = Backbone.View.extend({
 
     function insertData (i) {
       i.data = {
-        menu: false,
-        footer: false
+        menu: i.show_in_menu || false,
+        footer: i.show_in_footer || false
       };
       return i;
     }
