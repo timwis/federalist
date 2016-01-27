@@ -89,11 +89,11 @@
     "uswds:css:sass": "cd node_modules/uswds && npm run build-sass && cd ../..",
     "uswds:css:uswds": "mkdir -p assets/vendor/uswds/css && cp node_modules/uswds/assets/css/uswds.css assets/vendor/uswds/css",
     "uswds:css:gfonts": "cp node_modules/uswds/assets/css/google-fonts.css assets/vendor/uswds/css",
-    "uswds:images": "mkdir -p assets/vendor/uswds/img && cp -r node_modules/uswds/assets/img/ assets/vendor/uswds/img",
+    "uswds:images": "mkdir -p assets/vendor/uswds/img && cp -r node_modules/uswds/assets/img/* assets/vendor/uswds/img",
     "uswds:fonts": "mkdir -p assets/vendor/uswds/fonts && cp node_modules/uswds/assets/fonts/* assets/vendor/uswds/fonts",
     "codemirror": "mkdir -p assets/vendor/codemirror && cp node_modules/codemirror/lib/codemirror.css assets/vendor/codemirror",
     "prosemirror": "cd node_modules/prosemirror && npm run dist",
-    "jstree": "mkdir -p assets/vendor/jstree/themes && cp -r node_modules/jstree/dist/themes/ assets/vendor/jstree/themes"
+    "jstree": "mkdir -p assets/vendor/jstree/themes && cp -r node_modules/jstree/dist/themes/* assets/vendor/jstree/themes"
   },
   "main": "app.js",
   "repository": {

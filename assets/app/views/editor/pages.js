@@ -2,7 +2,7 @@ var fs = require('fs');
 
 var _ = require('underscore');
 var Backbone = require('backbone');
-var jsTree = require('jsTree');
+var jstree = require('jstree');
 var yaml = require('yamljs');
 
 var encodeB64 = require('../../helpers/encoding').encodeB64;
@@ -30,7 +30,7 @@ var PagesView = Backbone.View.extend({
     var p = yaml.parse(opts.pages.decodedContent);
     this.pages = this.preparePageData(p);
     this.sha = opts.pages.sha;
-    this.initializeJsTreePlugins($);
+    this.initializeJstreePlugins($);
 
     window.zz = this;
 
@@ -38,7 +38,7 @@ var PagesView = Backbone.View.extend({
 
     return this;
   },
-  initializeJsTreePlugins: function (jQuery) {
+  initializeJstreePlugins: function (jQuery) {
     (function ($, undefined) {
     	$.jstree.defaults.modifynodes = $.noop;
     	$.jstree.plugins.modifynodes = function (options, parent) {
@@ -62,6 +62,7 @@ var PagesView = Backbone.View.extend({
     			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
     			if(obj) {
             var attrs = parseAttributes(obj);
+            console.log('attrs', attrs);
             var el = $(template(attrs))[0];
             el.className = className;
     				obj.insertBefore(el.cloneNode(true), obj.childNodes[2]);
@@ -167,6 +168,11 @@ var PagesView = Backbone.View.extend({
     this.$el.html(templateHtml);
     var $ul = this.$('#assigned');
 
+    $ul.on("changed.jstree", function (e, d) {
+      console.log('e', e);
+      console.log('d', d);
+    });
+
     this.$tree = $ul.jstree({
       core: {
         check_callback: true,
@@ -178,7 +184,7 @@ var PagesView = Backbone.View.extend({
       },
       modifynodes: function (node) {
   		},
-      plugins: ["checkbox", "dnd", "modifynodes", "wholerow"]
+      plugins: ["changed", "checkbox", "dnd", "modifynodes", "wholerow"]
     });
 
     return this;
