@@ -1,3 +1,8 @@
+label,
+legend {
+  text-transform: none;
+}
+
 .usa-label {
   text-transform: capitalize;
 }
@@ -12,4 +17,8 @@
 
 .label-warning {
   background-color: $label-warning-bg-color;
+}
+
+.panel-body label {
+  font-weight: 500;
 }

@@ -19,11 +19,14 @@ var template = _.template(fs.readFileSync(__dirname + '/../../templates/editor/m
 var EditView = Backbone.View.extend({
   tagName: 'div',
   events: {
+    'click .site-navigation': 'hackyHandleNavClick',
     'click #add-page': 'newPage',
     'click #save-page': 'savePage'
   },
   initialize: function (opts) {
     if (!opts) return this;
+
+    window.zz = this;
 
     this.model = window.federalist.github = new Github({
       token: getToken(),
@@ -76,8 +79,6 @@ var EditView = Backbone.View.extend({
       model: this.model
     }).render();
 
-
-
     this.$('#edit-button').empty();
 
     if (model.get('type') === 'file') {
@@ -106,6 +107,7 @@ var EditView = Backbone.View.extend({
     this.pageSwitcher.current.trigger('click:save');
   },
   newPage: function(e) {
+    console.log('e', e);
     e.preventDefault();e.stopPropagation();
     var editView = new EditorView({ model: this.model , isNewPage: true });
 
@@ -128,6 +130,20 @@ var EditView = Backbone.View.extend({
     };
 
     fileReader.readAsDataURL(e);
+  },
+  hackyHandleNavClick: function (e) {
+    var m = this.model;
+    var sId = this.model.site.get('id');
+    var tId = e.target.id;
+    var routes = {
+      'site-navigation-pages': ['#edit', m.get('owner'), m.get('repoName'), m.get('branch')].join('/'),
+      'site-navigation-settings': ['#site', sId, 'edit'].join('/'),
+      'site-navigation-logs': ['#site', sId, 'builds'].join('/')
+    };
+
+    if (routes[tId]) {
+      window.location.hash = routes[tId];
+    }
   }
 });
 

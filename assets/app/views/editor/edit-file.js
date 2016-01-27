@@ -19,6 +19,7 @@ var whitelistFieldHtml = fs.readFileSync(__dirname + '/../../templates/editor/wh
 var EditorView = Backbone.View.extend({
   tagName: 'div',
   events: {
+    'click #back-to-overview': 'backToOverview',
     'click [data-action=save-content]': 'saveDocument',
     'click [data-action=delete-draft]': 'deleteDraft',
     'click [data-action=publish-content]': 'publishContent'
@@ -26,16 +27,29 @@ var EditorView = Backbone.View.extend({
   template: _.template(templateHtml),
   initialize: function (opts) {
     var self      = window.z = this,
-        file      = this.filePathFromModel(this.model),
-        fileExt   = this.fileExtensionFromName(this.model.get('file')),
-        html      = {
-          fileName: this.model.get('file'),
-          draft: this.model.get('isDraft')
-        };
+        file, fileExt, html;
 
     this.editors = {};
     this.path = opts.path;
     this.isNewPage = opts.isNewPage || false;
+
+    if (!this.isNewPage) {
+      file = this.filePathFromModel(this.model);
+      fileExt = this.fileExtensionFromName(this.model.get('file'));
+      html = {
+        fileName: this.model.get('file'),
+        draft: this.model.get('isDraft')
+      };
+    }
+    else {
+      file = 'hey';
+      fileExt = 'md';
+      html = {
+        fileName: '',
+        draft: false
+      };
+    }
+
     this.settingsFields = this.extendSettingFields(opts.settingsFields);
 
     this.doc = this.initializeDocument({
@@ -324,6 +338,7 @@ var EditorView = Backbone.View.extend({
     e.preventDefault();
     this.saveDocument(e, 'publish', function(err) {
       if (err) return this.saveFailure(err);
+      federalist.navigate('#'); // clear history so we can trigger a reload
       federalist.navigate([
         '#edit',
         this.model.get('owner'),
@@ -335,8 +350,7 @@ var EditorView = Backbone.View.extend({
   saveDocument: function (e, method, done) {
     var self = this,
         settings = this.getSettingsFromEditor(),
-        content = this.getContentFromEditor(),
-        pageTitle;
+        content = this.getContentFromEditor();
 
     e.preventDefault(); e.stopPropagation();
 
@@ -354,7 +368,7 @@ var EditorView = Backbone.View.extend({
     if (content) this.doc.content = content;
 
     if (this.isNewPage) {
-      this.saveNewDocument();
+      this.saveNewDocument(e, method, done);
     }
     else {
       this.model[method]({
@@ -365,8 +379,9 @@ var EditorView = Backbone.View.extend({
 
     return this;
   },
-  saveNewDocument: function () {
-    var self = this;
+  saveNewDocument: function (e, method, done) {
+    var self = this,
+        pageTitle, path;
 
     try {
       pageTitle = this.fileNameFromTitle(yaml.parse(this.settings).title);
@@ -375,11 +390,15 @@ var EditorView = Backbone.View.extend({
     }
 
     pageTitle = [pageTitle.replace(/\W/g, '-'), 'md'].join('.');
+    path = ['pages', pageTitle].join('/');
+
+    this.model.set('file', path);
 
     this.model[method]({
-      path: ['pages', pageTitle].join('/'),
+      path: path,
       content: this.doc.toMarkdown(),
-      message: 'Created ' + ['pages', pageTitle].join('/')
+      message: 'Created ' + path,
+      isNewFile: true
     }, done.bind(this));
   },
   getSettingsFromEditor: function () {
@@ -442,6 +461,15 @@ var EditorView = Backbone.View.extend({
         ext = (match) ? match[0].split('.')[1] : false;
 
     return ext;
+  },
+  backToOverview: function (e) {
+    e.preventDefault();
+    federalist.navigate([
+      '#edit',
+      this.model.get('owner'),
+      this.model.get('repoName'),
+      this.model.get('defaultBranch')
+    ].join('/'), { trigger: true });
   }
 });
 

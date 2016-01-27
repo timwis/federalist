@@ -44,7 +44,7 @@ var GithubModel = Backbone.Model.extend({
         baseUrl = [ghUrl, route],
         qs = $.param(_.extend({
           access_token: this.token,
-          ref: this.branch
+          ref: opts.branch || this.branch
         }, opts.params || {}));
 
     if (opts.method) baseUrl.push(opts.method);
@@ -71,18 +71,22 @@ var GithubModel = Backbone.Model.extend({
           path: opts.path || this.file,
           message: opts.message,
           content: opts.base64 || encodeB64(opts.content),
-          branch: this.branch
-        };
+          branch: opts.branch || this.branch
+        },
+        urlData = { path: data.path },
+        url;
+
     done = done || _.noop;
 
-    if (this.attributes.json && this.attributes.json.sha) {
-      data.sha = this.attributes.json.sha;
-    }
-    else if (opts.sha) {
+    if (opts.branch) urlData.branch = opts.branch;
+    if (opts.sha) {
       data.sha = opts.sha;
     }
+    else if (this.attributes.json && this.attributes.json.sha) {
+      data.sha = this.attributes.json.sha;
+    }
 
-    $.ajax(this.url({ path: data.path }), {
+    $.ajax(this.url(urlData), {
       method: 'PUT',
       headers: {
         'Authorization': 'token ' + this.token,
@@ -171,6 +175,7 @@ var GithubModel = Backbone.Model.extend({
         head: this.get('branch')
       },
       success: function(res) {
+        console.log('res', res);
         this.set('pr', res[0].number);
         done(null, res);
       }.bind(this),
@@ -186,10 +191,13 @@ var GithubModel = Backbone.Model.extend({
       return this.commit(opts, done);
     }
 
+    console.log('opts', opts);
+
     async.series([
       this.createDraftBranch.bind(this),
       this.commit.bind(this, opts),
-      this.createPR.bind(this)
+      this.createPR.bind(this),
+      this.updateNav.bind(this, opts)
     ], done);
 
   },
@@ -246,6 +254,48 @@ var GithubModel = Backbone.Model.extend({
       error: done
     });
 
+  },
+  updateNav: function (opts, done) {
+    console.log('opts', opts);
+    if (!opts.isNewFile) return;
+
+    var path = this.configFiles['_data/navbar.yml'].json.path;
+    var sha = this.configFiles['_data/navbar.yml'].json.sha;
+    var filePath = opts.path;
+    var fileContents = opts.content.match(/title: (.+)/);
+    var fileName = (fileContents) ? fileContents[1] : filePath.split('/')[1];
+    var navContent = decodeB64(this.configFiles['_data/navbar.yml'].json.content);
+    var nav = yaml.parse(navContent);
+    var url = this.url({ path: path, branch: this.get('defaultBranch') });
+    var n = {
+      text: fileName,
+      href: filePath,
+      show_in_menu: false,
+      show_in_footer: false
+    };
+    nav.assigned.push(n);
+
+    $.ajax({
+      url: url,
+      success: function(res) {
+        var x = {
+          path: path,
+          branch: this.get('defaultBranch'),
+          message: 'Updating navigation',
+          content: yaml.stringify(nav),
+          sha: res.sha
+        };
+
+        this.commit({
+          path: path,
+          branch: this.get('defaultBranch'),
+          message: 'Updating navigation',
+          content: yaml.stringify(nav),
+          sha: res.sha
+        }, done);
+      }.bind(this),
+      error: done
+    });
   },
   /*
    * Clone a repository to the user's account.

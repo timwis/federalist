@@ -9,7 +9,12 @@ h4,
 h5,
 h6 {
   font-family: $sans-serif;
+  font-weight: 500;
   margin-top: .5em;
+}
+
+p {
+  margin: .2em 0;
 }
 
 .center-text {

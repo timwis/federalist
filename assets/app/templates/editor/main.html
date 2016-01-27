@@ -1,23 +1,27 @@
-<div class="usa-grid">
-  <div class="usa-width-two-thirds">
-    <% var r = repo.replace(new RegExp('-', 'g'), ' '); %>
-    <h1><%- r[0].toUpperCase() + r.slice(1) %></h1>
+<div class="usa-grid site">
+  <div class="usa-width-one-sixth site-navigation">
+    <ul class="usa-unstyled-list">
+      <li class="pages"><a id="site-navigation-pages">Pages</a></li>
+      <li class="media"><a id="site-navigation-media">Media</a></li>
+      <li class="settings"><a id="site-navigation-settings">Settings</a></li>
+      <li class="logs"><a id="site-navigation-logs">Logs</a></li>
+    </ul>
   </div>
-  <div class="usa-width-one-third">
-    <% if (!file) { %>
-    <a class="usa-button usa-button-big pull-right" id="add-page" alt="Add a new page" href="#" role="button">Add a new page</a>
-    <% } else if (draft) { %>
-    <div class="preview-buttons">
-      <a class="usa-button usa-button-big pull-right preview-button" href="/preview/<%- owner %>/<%- repo %>/<%- branch %>/" role="button">Preview Draft</a>
-      <button class="usa-button usa-button-disabled usa-button-big pull-right preview-button-disabled">Generating Preview...</button>
+  <div class="usa-width-five-sixths site-editor">
+    <div class="site-editor-heading">
+      <% var r = repo.replace(new RegExp('-', 'g'), ' '); %>
+      <h1><%- r[0].toUpperCase() + r.slice(1) %></h1>
+      <% if (!file) { %>
+      <a class="usa-button editor-add-page" id="add-page" alt="Add Page" href="#" role="button">Add Page</a>
+      <a class="usa-button usa-button-outline editor-add-page" id="view-site" alt="View Website" href="/preview/<%- owner %>/<%- repo %>/<%- branch %>/" role="button">View Website</a>
+      <% } else if (draft) { %>
+      <div class="preview-buttons">
+        <a class="usa-button preview-button" href="/preview/<%- owner %>/<%- repo %>/<%- branch %>/" role="button">Preview Draft</a>
+        <!-- <button class="usa-button usa-button-disabled preview-button-disabled">Generating Preview...</button> -->
+      </div>
+      <% } %>
     </div>
-    <% } %>
+    <div id="edit-content">
+    </div>
   </div>
-</div>
-<div class="usa-grid">
-  <ol class="breadcrumb">
-  </ol>
-</div>
-
-<div class="usa-grid" id="edit-content">
 </div>

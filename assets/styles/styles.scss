@@ -7,18 +7,76 @@
 @import "sass/_forms";
 @import "sass/_header";
 @import "sass/_home";
+@import "sass/_image-cards";
 @import "sass/_jstree";
 @import "sass/_labels";
 @import "sass/_text";
 
-
-[draggable],
-[draggable=true] {
-  cursor: move;
+body {
+  background-color: $secondary-bg-color;
 }
 
-footer {
-  margin-top: 5em;
+.site {
+
+}
+
+.site-navigation ul {
+  list-style-type: none;
+  margin-top: 2em;
+}
+
+.site-navigation li {
+  margin-bottom: 1em;
+}
+
+.site-navigation li::before {
+  background-image: url('/images/sprites.svg');
+  background-repeat: no-repeat;
+  background-size: 400px 250px;
+  box-sizing: content-box;
+  content: " ";
+  display: inline-block;
+  height: 20px;
+  margin-right: .8em;
+  width: 23px;
+}
+
+.pages::before {
+  background-position-x: -114px;
+  background-position-y: -4px;
+}
+
+.media::before {
+  background-position-x: -114px;
+  background-position-y: -31px;
+}
+
+.settings::before {
+  background-position-x: -114px;
+  background-position-y: -59px;
+}
+
+.logs::before {
+  background-position-x: -114px;
+  background-position-y: -87px;
+}
+
+.site-navigation a {
+  cursor: pointer;
+}
+
+.site-editor {
+  background-color: white;
+  padding-left: 1em;
+}
+
+.site-editor h1 {
+  display: inline-block;
+  font-size: 2em;
+}
+
+.editor-add-page {
+
 }
 
 .site-title {
@@ -87,50 +145,6 @@ footer {
   margin-bottom: 0;
   margin-top: 1.3em;
   padding-left: 1em;
-}
-
-.upload-alert {
-  margin-bottom: 1.5em;
-}
-
-.image-cards {
-  margin-bottom: 1em;
-  overflow-x: scroll;
-  width: 100%;
-}
-
-.image-cards .scroll{
-  display: flex;
-}
-
-.image-card {
-  background-color: #ccc;
-  margin-right: 1em;
-  min-height: 200px;
-  position: relative;
-  width: 150px;
-}
-
-.image-cards .selected {
-  border: 7px solid black;
-}
-
-.image-card img {
-  margin-left: 5%;
-  margin-top: 5%;
-  width: 90%;
-}
-
-.image-card span {
-  background-color: pink;
-  bottom: .5em;
-  display: inline-block;
-  left: 0;
-  padding-top: .3em;
-  padding-bottom: .3em;
-  position: absolute;
-  text-align: center;
-  width: 100%;
 }
 
 .mask {

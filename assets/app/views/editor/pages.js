@@ -23,7 +23,8 @@ var PagesView = Backbone.View.extend({
     'click #save-navigation': 'onSaveNavigation',
     'click [data-action=reveal-navigation-options]': 'revealNavigationOptions',
     'click [data-action=hide-navigation-options]': 'hideNavigationOptions',
-    'change .jstree-node-federalist-controls-navigation': 'onNavigationChange'
+    'change .jstree-node-federalist-controls-navigation': 'onNavigationChange',
+    'click .jstree-anchor': 'onAnchorClick'
   },
   initialize: function (opts) {
     opts = opts || {};
@@ -62,10 +63,15 @@ var PagesView = Backbone.View.extend({
     			obj = parent.redraw_node.call(this, obj, deep, callback, force_draw);
     			if(obj) {
             var attrs = parseAttributes(obj);
-            console.log('attrs', attrs);
             var el = $(template(attrs))[0];
             el.className = className;
     				obj.insertBefore(el.cloneNode(true), obj.childNodes[2]);
+            var $anchorEl = $(obj).children('.jstree-anchor');
+            var s = '<i class="jstree-icon jstree-checkbox" role="presentation"></i><i class="jstree-icon jstree-themeicon" role="presentation"></i>';
+            var startIndex = $anchorEl.html().indexOf(s) + s.length;
+            var text = $anchorEl.html().slice(startIndex);
+            var newText = _.template('<a class="anchorLink"><%- text %></a>')({ text: text });
+            $anchorEl.html(s + newText);
     			}
     			return obj;
     		};
@@ -113,6 +119,7 @@ var PagesView = Backbone.View.extend({
     function insertAttrs (i) {
       i.li_attr = {
         'data-edit-href': i.href,
+        'data-edit-permalink': i.permalink,
         'data-draft-state': _.contains(github.get('drafts'), i.href),
         'data-show-in-menu': i.show_in_menu || false,
         'data-show-in-footer': i.show_in_footer || false
@@ -144,6 +151,7 @@ var PagesView = Backbone.View.extend({
       }
       else if (k === 'li_attr') {
         n.href = j.li_attr['data-edit-href'];
+        n.permalink = j.li_attr['data-edit-permalink'];
       }
       else if (k === 'data') {
         n.show_in_menu = j.data.menu;
@@ -212,12 +220,15 @@ var PagesView = Backbone.View.extend({
   },
   onDeleteDraft: function (e) {
     e.stopPropagation();
+    alert('This will delete any drafts that have been selected');
   },
   onDeletePage: function (e) {
     e.stopPropagation();
+    alert('This will delete any pages that have been selected');
   },
   onPublish: function (e) {
     e.stopPropagation();
+    alert('This will publish any drafts that have been selected');
   },
   onNavigationChange: function (e) {
     e.stopPropagation();
@@ -241,6 +252,14 @@ var PagesView = Backbone.View.extend({
       path: '_data/navbar.yml',
       sha: this.sha
     });
+  },
+  onAnchorClick: function (e) {
+    e.preventDefault();
+    var targetClass = e.target.className;
+    var l = $(e.target).parents('.jstree-node').first().attr('data-edit-href');
+    if (targetClass === 'anchorLink') {
+      window.location.hash += '/' + l;
+    }
   }
 });
 

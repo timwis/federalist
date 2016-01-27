@@ -19,12 +19,18 @@
 }
 
 .jstree-container-ul {
+  padding: 1em;
   width: 100%;
+}
+
+.jstree-container-ul.jstree-children.jstree-wholerow-ul {
+  margin-top: 0;
 }
 
 .jstree-container-ul li.jstree-node {
   border-bottom: 0;
   min-height: 3em;
+  position: relative;
 }
 
 .jstree-container-ul li.jstree-node.expanded {
@@ -32,8 +38,9 @@
 }
 
 .jstree-default .jstree-wholerow {
+  background-color: $secondary-bg-color;
   min-height: 3em;
-  z-index: -1;
+  z-index: 0;
 }
 
 .jstree-node.expanded .jstree-wholerow {
@@ -46,6 +53,11 @@
 
 .jstree-default .jstree-anchor {
   min-height: 2.2em;
+}
+
+.jstree-node-federalist-controls,
+.jstree-anchor {
+  padding-top: .4em;
 }
 
 .jstree-icon.jstree-themeicon {
@@ -61,21 +73,75 @@
   // color: $header-text-color;
 }
 
-.jstree-hovered .jstree-checkbox {
+.jstree-default .jstree-checkbox {
+  background-image: url('/images/sprites.svg');
+  background-repeat: no-repeat;
+  background-position: -119px -167px;
+  background-size: 400px 250px;
+  box-sizing: content-box;
+  content: " ";
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+}
 
+.jstree-default .jstree-checkbox:hover {
+  background-position: -119px -194px !important;
+}
+
+.jstree-default.jstree-checkbox-selection .jstree-clicked>.jstree-checkbox:hover,
+.jstree-default .jstree-checked>.jstree-checkbox:hover,
+.jstree-default.jstree-checkbox-selection .jstree-clicked>.jstree-checkbox,
+.jstree-default .jstree-checked>.jstree-checkbox {
+  background-position: -119px -194px !important;
+}
+
+.jstree-default .jstree-anchor>.jstree-undetermined,
+.jstree-default .jstree-anchor>.jstree-undetermined:hover {
+  background-position: -119px -222px !important;
 }
 
 .jstree-node-federalist-controls {
   display: inline-block;
-  width: 75%;
+  position: absolute;
+  right: 1em;
+  width: 80%;
+  z-index: 2;
 }
 
 .jstree-node-federalist-controls-navigation {
   display: inline-block;
   position: absolute;
-  right: .7em;
+  right: 0;
+}
+
+.jstree-node-federalist-controls-navigation .show-navigation::before {
+  background-image: url("/images/sprites.svg");
+  background-repeat: no-repeat;
+  background-position: -147px -29px;
+  background-size: 400px 250px;
+  box-sizing: border-box;
+  content: " ";
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+}
+
+.jstree-node-federalist-controls-navigation .hide-navigation::before {
+  background-image: url("/images/sprites.svg");
+  background-repeat: no-repeat;
+  background-position: -147px -55px;
+  background-size: 400px 250px;
+  box-sizing: border-box;
+  content: " ";
+  display: inline-block;
+  height: 25px;
+  width: 25px;
+}
+.jstree-node-federalist-controls-navigation .hide-navigation {
+  display: inline-block;
   text-align: right;
-  width: 50%;
+  width: 100%;
 }
 
 .jstree-node-federalist-controls-navigation::after {
@@ -103,4 +169,16 @@
   font-size: .8em;
   margin: 0;
   padding: .5em 1em;
+}
+
+#select-all::before {
+  background-image: url('/images/sprites.svg');
+  background-repeat: no-repeat;
+  background-position: -119px -167px;
+  background-size: 400px 250px;
+  box-sizing: content-box;
+  content: " ";
+  display: inline-block;
+  height: 15px;
+  width: 15px;
 }

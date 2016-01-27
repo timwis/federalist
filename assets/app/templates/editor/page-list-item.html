@@ -1,13 +1,17 @@
 <span>
-  <% if (draft) { %><span class="usa-label">Draft</span><% } %>
+  <% if (draft) { %>
+    <span class="usa-label">Draft</span>
+  <% } %>
 
-  <a class="usa-button usa-button-outline" href="<%- href %>">Edit</a>
-  <div class="jstree-node-federalist-controls-navigation">
-    <a data-action="reveal-navigation-options">Navigation options</a>
-    <a data-action="hide-navigation-options" style="display: none;">Close</a>
-    <form class="hidden">
-      <input type="checkbox" name="menu" <% if (menu) { %> checked <% } %> >Show in menu</input>
-      <input type="checkbox" name="footer" <% if (footer) { %> checked <% } %> >Show in footer</input>
-    </form>
-  </div>
+  <span>
+    <!-- <a class="usa-button usa-button-outline" href="<%- href %>">Edit</a> -->
+    <div class="jstree-node-federalist-controls-navigation">
+      <a class="show-navigation" data-action="reveal-navigation-options">Navigation options</a>
+      <a class="hide-navigation" data-action="hide-navigation-options" style="display: none;">Close</a>
+      <form class="hidden">
+        <input type="checkbox" name="menu" <% if (menu) { %> checked <% } %> >Show in menu</input>
+        <input type="checkbox" name="footer" <% if (footer) { %> checked <% } %> >Show in footer</input>
+      </form>
+    </div>
+  </span>
 </span>
