@@ -13,7 +13,7 @@
       <h1><%- r[0].toUpperCase() + r.slice(1) %></h1>
       <% if (!file) { %>
       <a class="usa-button editor-add-page" id="add-page" alt="Add Page" href="#" role="button">Add Page</a>
-      <a class="usa-button usa-button-outline editor-add-page" id="view-site" alt="View Website" href="/preview/<%- owner %>/<%- repo %>/<%- branch %>/" role="button">View Website</a>
+      <a class="usa-button usa-button-outline editor-add-page" id="view-site" alt="View Website" href="http://federalist.18f.gov.s3-website-us-east-1.amazonaws.com/site/<%- owner %>/<%- repo %>" role="button">View Website</a>
       <% } else if (draft) { %>
       <div class="preview-buttons">
         <a class="usa-button preview-button" href="/preview/<%- owner %>/<%- repo %>/<%- branch %>/" role="button">Preview Draft</a>

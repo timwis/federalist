@@ -256,8 +256,7 @@ var GithubModel = Backbone.Model.extend({
 
   },
   updateNav: function (opts, done) {
-    console.log('opts', opts);
-    if (!opts.isNewFile) return;
+    if (opts.isNewFile !== true) return done();
 
     var path = this.configFiles['_data/navbar.yml'].json.path;
     var sha = this.configFiles['_data/navbar.yml'].json.sha;
