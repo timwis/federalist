@@ -53,7 +53,7 @@ module.exports = {
             if (err && done) return done(err, model);
             if (err) return sails.log.error(err);
             model.user.passport = passport;
-            queue.addJob(model);
+            if (process.NODE_ENV !== 'test') queue.addJob(model);
             if (done) return done();
           });
     });
