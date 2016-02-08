@@ -4,7 +4,7 @@ var Sails = require('sails'),
 GLOBAL.helpers = require('./helpers');
 
 before(function(done) {
-  this.timeout(15000);
+  this.timeout(35000);
 
   Sails.lift({
     // configuration for testing purposes

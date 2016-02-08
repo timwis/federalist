@@ -1,21 +1,24 @@
 var assert = require('assert');
 var _ = require('underscore');
+var request = require('request');
+var Q = require('q');
+
 var NewSitePage = require('./pageobjects/newSite.page');
 
 var newSitePage;
 
 before(function () {
-  this.timeout(15000);
+  this.timeout(25000);
   newSitePage = new NewSitePage(helpers.webdriver.createDriver());
   return newSitePage.init();
 });
 
 after(function () {
-  return newSitePage.end();
+  // return newSitePage.end();
 });
 
 describe('new site page integration tests', function () {
-  this.timeout(15000);
+  this.timeout(25000);
 
   it('logs in', function () {
     return newSitePage.login();
@@ -68,17 +71,17 @@ describe('new site page integration tests', function () {
         });
     });
 
-    describe('using the first template', function () {
+    describe('using the third template', function () {
       var templateElement;
       beforeEach(function () {
         return newSitePage.templateElements()
           .then(function (templateElements) {
-            templateElement = templateElements[0];
+            templateElement = templateElements[2];
           });
       });
 
       describe('for an existing repo', function () {
-        it('clicks the the first one', function () {
+        it('clicks the the third one', function () {
           return templateElement
             .useThisTemplateElement()
             .click();
@@ -103,7 +106,7 @@ describe('new site page integration tests', function () {
       });
 
       describe('for a new repo', function () {
-        var repoName;
+        var repoName, ghToken;
         before(function () {
           var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
           repoName = 'foo-' + _.range(10)
@@ -115,8 +118,31 @@ describe('new site page integration tests', function () {
             .join('');
         });
 
-        after(function () {
-          // TODO Figure out how to delete the test repo
+        after(function (done) {
+          var opts = {
+            url: ['https://api-github-com-gwqynjms41pa.runscope.net/repos', process.env.FEDERALIST_TEST_USER, repoName].join('/'),
+            headers: {
+              'Authorization': 'token ' + process.env.FEDERALIST_TEST_TOKEN,
+              'User-Agent': 'Federalist Tests'
+            }
+          };
+
+          newSitePage.driver.waitUntil(function() {
+            return Q.Promise(function(resolve, reject) {
+              request.get(opts, function (err, res) {
+                if (err) reject(err);
+
+                if (res.statusCode === 200) {
+                  resolve();
+                }  else {
+                  reject();
+                }
+              })
+            })
+          })
+          .then(function() {
+            return request.del(opts, done);
+          });
         });
 
         it('opens new site', function () {
@@ -139,12 +165,23 @@ describe('new site page integration tests', function () {
             .submitNewSiteName();
         });
 
-        it('flashes an error message', function() {
-          return newSitePage.flashMessage()
-            .then(function (message) {
-              assert.equal(message, 'We encountered an error while making your website: name already exists on this account');
+        it('redirects to homepage', function () {
+          return newSitePage.driver.url()
+            .then(function (url) {
+              assert.equal(url.value, 'http://localhost:1337/#');
             });
         });
+
+        // it('shows up on home page', function () {
+        //   TODO
+        // });
+
+        // it('flashes an error message', function() {
+        //   return newSitePage.flashMessage()
+        //     .then(function (message) {
+        //       assert.equal(message, 'We encountered an error while making your website: name already exists on this account');
+        //     });
+        // });
       });
     });
   });
