@@ -3,6 +3,8 @@ var Sails = require('sails'),
 
 GLOBAL.helpers = require('./helpers');
 
+delete process.env.GITHUB_TOKEN;
+
 before(function(done) {
   this.timeout(35000);
 
