@@ -19,7 +19,7 @@ module.exports.webdriver = {
         'user': process.env.SAUCE_USERNAME,
         'key': process.env.SAUCE_ACCESS_KEY,
         'baseUrl': 'http://localhost:1337',
-        'waitforTimeout': 10000
+        'waitforTimeout': 20000
       },
       options || {}
     ));
