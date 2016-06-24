@@ -1,14 +1,15 @@
 # Federalist
 [![Build Status](https://travis-ci.org/18F/federalist.svg?branch=master)](https://travis-ci.org/18F/federalist)
+[![Code Climate](https://codeclimate.com/github/18F/federalist/badges/gpa.svg)](https://codeclimate.com/github/18F/federalist)
 
-***Under active development. Everything is subject to change. Interested in talking to us? [Join our public chat](https://chat.18f.gov/) room (select `federalist-public` from the dropdown).***
+***Under active development. Everything is subject to change. Interested in talking to us? [Join our public chat room](https://chat.18f.gov/?channel=federalist-public).***
 
 Federalist is a unified interface for publishing static government websites. It automates common tasks for integrating GitHub, [Prose](https://github.com/prose/prose), and Amazon Web Services to provide a simple way for developers to launch new websites or more easily manage existing ones.
 
 ## Getting started
 
 To run the server, you'll need [Node.js](https://nodejs.org/download/) and [Ruby](https://www.ruby-lang.org/en/documentation/installation/) installed. The setup process will automatically install Jekyll and its dependencies based on the `github-pages` gem.
-
+You'll also need [nvm](https://github.com/creationix/nvm).
 To build sites using Hugo, install [Hugo](http://gohugo.io/overview/installing/) and make sure it's available in your path.
 
 
@@ -54,6 +55,7 @@ You'll notice that we talk about a `/config/local.js` file below, particularly f
 
 * Download or Clone this repository from Github either by using the command line or repo's website on Github. On the right side of the repo's page, there is a button that states "Clone in Desktop".
 *
+* Run `nvm use` to ensure you are using the correct version of node
 * Run `npm install` from the root(the directory that houses the projects files on your computer) of the repository to load modules and install Jekyll dependencies
 
 Together these commands will looks something like the following:
@@ -61,6 +63,7 @@ Together these commands will looks something like the following:
 ```
 $ git clone git@github.com:18F/federalist.git
 $ cd federalist
+$ nvm use
 $ npm install
 ```
 
@@ -149,19 +152,48 @@ To run the integration tests you'll need:
 - [Selenium](http://www.seleniumhq.org/) (and [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html)).
 - [chromedriver](https://sites.google.com/a/chromium.org/chromedriver/)
 
-On a mac, you can install them via Homebrew:
+##### Installing all of that and getting it running
 
-    $ brew install selenium-server-standalone
-    $ brew install chromedriver
-    $ selenium-server &
+We're going to use `selenium-standalone` to make installing all of those tools
+just a bit easier to manage and install and we have some `npm` scripts to help
+out.
 
-You'll need a user to test against, (ping your fellow developers for an existing
-test user).
+    $ npm run test:selenium:install
+    $ npm run test:selenium:start
+
+Make sure to run both of these commands, and install Java if it asks you to do so.
+It is required for selenium. After the second command is run successfully you
+should see something like
+
+    09:47:12.342 INFO - Selenium Server is up and running
+    Selenium started
+
+##### Setting up the test Github user
+
+The integration tests rely on a test Github user to ensure that data is
+appropriately displayed in the application. You can use any Github user, but
+18F uses [@FederalistTestingUser](https://github.com/FederalistTestingUser).
+
+First you need to give your app permission to access the user's data, but that
+is not part of the integration test at this time. Thus, you should do this just
+the first time you are setting up a new Github application.
+
+Ensure that you have a Federalist application running (locally is fine). Open
+an Incognito browser window and login to Github.com with your test user. If you
+are on the 18F team, please ask in the Slack room for the test user credentials.
+
+Once you have logged into Github, open your application
+([http://127.0.0.1:1337](http://127.0.0.1:1337) if you're running locally) and
+login. You should grant the application permission to access the test user's
+data in the OAuth authorization view.
+
+Now that your application can access Github on behalf of the test user, set the
+environment variables for the integration tests.
 
     $ export FEDERALIST_TEST_USER=<test user>
     $ export FEDERALIST_TEST_PASSWORD=<test user password>
 
-And then run the tests:
+And now you can run the tests:
 
     $ npm run test:integration
 
@@ -172,7 +204,7 @@ Sauce Labs can be a bit flakey sometimes and failures on Travis might not be
 reproducible locally. If you're just looking for details of the last Travis run,
 ping the [account holder for
 access](https://github.com/18F/federalist/blob/523aceb9885f248dd60189f9c13c834c3ba0947e/.travis.yml#L24).
-Otherwise, request a Sauce Labs account from #devops.
+Otherwise, 18F personnel can request a Sauce Labs account in Slack.
 
 Once you have an account, you'll need your access key. It's available in the
 Sauce Labs account settings and looks like a GUID e.g.

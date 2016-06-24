@@ -4,10 +4,13 @@ var querystring = require('querystring');
 
 var SiteListView = require('./list');
 var SiteView = require('./site/site');
+var HomeView = require('./home');
 
-var AppView = Backbone.View.extend({
+var MainView = Backbone.View.extend({
   el: 'main',
   initialize: function (opts) {
+    opts = (typeof opts === 'object' && opts) || {};
+
     this.user = opts.user;
     this.sites = opts.collection;
 
@@ -34,15 +37,20 @@ var AppView = Backbone.View.extend({
     $('.alert-container').html('');
   },
   setAlert: function (text) {
+    var newAlert = $('<div/>', {
+      class: 'usa-alert usa-alert-error',
+      role: 'alert'
+    });
+
     $('.alert-container').html(
-      '<div class="alert alert-danger" role="alert">' + text + '</div>'
+      newAlert.html('<div class="usa-alert-body">' + text + '</div>')
     );
   },
   parseDashboardErrorFromURL: function (url) {
     var messages = {
-      'Error.Passport.Unauthorized': 'Your account is not set up to access Federalist. Have you signed up as a beta user? If you have signed up and should have access, please let us know. You can reach us in our public chat room. Please select "federalist-public" from the drop-down menu at https://chat.18f.gov',
+      'Error.Passport.Unauthorized': 'Your account is not set up to access Federalist. Have you signed up as a beta user? If you have signed up and should have access, please let us know. You can reach us in our public chat room: https://chat.18f.gov/?channel=federalist-public',
       'preview.login': 'Please log in to preview this site',
-      'default': 'An unexpected error occured. Please try again. If you continue to see this message, please let us know. You can reach us in our public chat room. Please select "federalist-public" from the drop-down menu at https://chat.18f.gov'
+      'default': 'An unexpected error occured. Please try again. If you continue to see this message, please let us know. You can reach us in our public chat room: https://chat.18f.gov/?channel=federalist-public'
     };
     var error = querystring.parse(url.search.slice(1)).error;
     var message = error && (messages[error] || messages['default']);
@@ -63,7 +71,9 @@ var AppView = Backbone.View.extend({
     }
 
     // Show alert message
-    if (message) this.setAlert(message);
+    if (error) this.setAlert(error);
+
+    this.pageSwitcher.set(new HomeView());
 
     return this;
   },
@@ -100,4 +110,4 @@ var AppView = Backbone.View.extend({
   }
 });
 
-module.exports = AppView;
+module.exports = MainView;
